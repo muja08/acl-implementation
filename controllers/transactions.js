@@ -2,6 +2,7 @@ var axios = require('axios');
 var qs = require('qs');
 const mongoConnect = require('../mongo-conn')
 const { validationResult } = require('express-validator');
+const logger = require('./../logger').logger
 
 // list transactions and update in mongo
 exports.listTranscations = async function (req, res) {
@@ -43,7 +44,7 @@ exports.listTranscations = async function (req, res) {
         });
 
     } catch (error) {
-        console.log("Error: Couldn't get the transactions list", error)
+        logger.error("Couldn't get the transactions list", error)
         res.send({
             status: 500,
             error,
@@ -55,6 +56,7 @@ exports.listTranscations = async function (req, res) {
 // get balance of user and price of ethereum
 exports.getBalanceAndEthereumPrice = async function (req, res) {
     try {
+        logger.info('muja');
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             res.json(errors)
@@ -93,7 +95,7 @@ exports.getBalanceAndEthereumPrice = async function (req, res) {
         });
 
     } catch (error) {
-        console.log("Error: Couldn't get the Info", error)
+        logger.error("Couldn't get the Info", error)
         res.send({
             status: 500,
             error,

@@ -1,5 +1,6 @@
 var axios = require('axios');
 const mongoConnect = require('../mongo-conn')
+const logger = require('./../logger').logger
 
 exports.captureEthereumPrice = async function () {
     try {
@@ -18,8 +19,10 @@ exports.captureEthereumPrice = async function () {
             { name: 'ethereum' },
             { $set: { name: 'ethereum', price : ethereumPrice.data.ethereum }},
             { upsert: true })
+            
+        logger.info("Ethereum price updated in DB")
 
     } catch (error) {
-        console.log("Error: Couldn't update ethereum price in DB")
+        logger.error("Couldn't update ethereum price in DB", error)
     }
 };

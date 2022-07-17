@@ -1,6 +1,8 @@
 const { MongoClient } = require('mongodb');
 const url = 'mongodb://localhost:27017';
 const client = new MongoClient(url);
+const logger = require('./logger').logger
+
 const dbName = 'koinx';
 
 async function getConnection() {
@@ -8,7 +10,7 @@ async function getConnection() {
         return this.db
     }
     await client.connect();
-    console.log('INFO: Mongo connection successfull');
+    logger.info('Mongo connection successfull');
     this.db = client.db(dbName);
     return this.db
 }

@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+const logger = require('./logger').logger
+
 var cors = require('cors');
 
 const { info, listTransactions } = require('./validation');
@@ -15,9 +17,10 @@ async function main() {
     await mongoConnect()
 
     // Ethereum Bot
-    console.log('INFO: Ethereum price Bot started');
+    logger.info('Ethereum price Bot started');
+    
+    // Task 2
     setInterval(async () => {
-        // Task 2
         await priceController.captureEthereumPrice()
     }, 600000);
 }
@@ -44,5 +47,5 @@ app.get('/api/info', info, transactionController.getBalanceAndEthereumPrice)
 var server = app.listen(8081, function () {
    var host = 'localhost'
    var port = server.address().port
-   console.log("INFO: App listening at http://%s:%s", host, port)
+   logger.info(`App listening at http://${host}:${port}`)
 })
