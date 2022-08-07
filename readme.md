@@ -1,6 +1,10 @@
+Pre-requesites
+keep node installed
+keep mysql installed
 
-mongo database name: koinx
-collections: transactions, cryptoPrice
-
+execute below:
 npm i
-start of the file: index.js
+executing scratchDB.sql in Mysql will create entries in SQL
+nodemon index.js
+
+please refer calorie-tracking-DOC.md for further proceedings
