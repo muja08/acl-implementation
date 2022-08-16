@@ -10,7 +10,7 @@ module.exports = function (authRoles) {
                 var error = new Error('Authorization Failed!');
                 res.status(401).json({
                     success: false,
-                    message: 'User does not have certain privileges to access this API!',
+                    message: "Not authorized to access endpoint",
                 });
                 return next(error);
             }
