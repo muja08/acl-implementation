@@ -9,7 +9,7 @@ const os = require('os')
 const noOfCPU = os.cpus().length
 
 //validator
-const { login, foodCreate, foodUpdate, foodList, userFoodIntakeCreate, userIntakeThreshold, userFoodsList } = require('./validation');
+const validation = require('./validation');
 
 // middlewares 
 var authMiddleware = require('./middlewares/authMiddleware');
@@ -17,9 +17,7 @@ var authorizeMiddleware = require('./middlewares/groupAuthMiddleware');
 
 // controllers
 var publicController = require('./controllers/publicCalls')
-var foodController = require('./controllers/food-crud')
-var userFoodController = require('./controllers/user-food')
-var reportsController = require('./controllers/reports')
+var productController = require('./controllers/product')
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -27,7 +25,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use("/api/*", authMiddleware)
+app.use("/product*", authMiddleware)
 
 
 // for clustering
@@ -48,25 +46,13 @@ if (cluster.isMaster) {
 }
 
 // login call
-app.post('/auth/login', login, publicController.login)
+app.post('/login', validation.login, publicController.login)
+app.post('/signup', validation.signup, publicController.signup)
 
-// food-crud
-app.post('/api/food', authorizeMiddleware(['admin', 'subscriber']), foodCreate, foodController.create)
-app.put('/api/food/:id', authorizeMiddleware(['admin']), foodUpdate, foodController.update)
-app.delete('/api/food/:id', authorizeMiddleware(['admin']), foodController.delete)
-app.get('/api/food', authorizeMiddleware(['admin', 'subscriber']), foodList, foodController.list)
-
-// food-intake
-app.post('/api/user/foodIntake', authorizeMiddleware(['subscriber']), userFoodIntakeCreate, userFoodController.create)
-
-// change-threshold
-app.put('/api/user/threshold', authorizeMiddleware(['subscriber']), userIntakeThreshold, userFoodController.updateThreshold)
-
-// get user daywise
-app.get('/api/report/userDaywise', authorizeMiddleware(['subscriber']), userFoodController.userDaywiseReport)
-
-// get user food list
-app.get('/api/user/food', authorizeMiddleware(['admin', 'subscriber']), userFoodsList, userFoodController.list)
-
-// admin report
-app.get('/api/admin/report', authorizeMiddleware(['admin']), reportsController.adminReport)
+// product 
+// pass * in authorizeMiddleware function if you want to give access to all user roles
+app.post('/product', authorizeMiddleware(['admin', 'seller']), validation.productCreate, productController.create)
+app.get('/product', authorizeMiddleware(['admin', 'seller', 'supporter', 'customer']), validation.productList, productController.list)
+app.put('/product', authorizeMiddleware(['admin', 'seller']), validation.productUpdate, productController.update)
+app.patch('/product/:id', authorizeMiddleware(['admin', 'seller']), validation.productUpdateStatus, productController.updateProductStatus)
+app.delete('/product/:id', authorizeMiddleware(['admin', 'supporter']), validation.productDelete, productController.delete)

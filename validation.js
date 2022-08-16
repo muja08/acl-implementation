@@ -1,42 +1,25 @@
-const { check } = require('express-validator');
+const { body } = require('express-validator');
 
 exports.login = [
-    check('user_name', 'user_name is required').not().isEmpty().isString(),
-    check('password', 'password is required').not().isEmpty().isString(),
+    body('user_name', 'user_name is required').not().isEmpty().isAlphanumeric(),
+    body('password', 'password is required field, can be alphanumeric of length 8 to 15').notEmpty().isAlphanumeric().isLength({ min: 8, max:15 })
 ]
 
-exports.foodCreate = [
-    check('food_name', 'food_name is required').not().isEmpty().isString(),
-    check('unit_of_measurement', 'unit_of_measurement is required').not().isEmpty().isIn(['gram', 'litre']),
-    check('unit', 'unit is required').not().isEmpty().isFloat(),
-    check('calories', 'calories is required').not().isEmpty().isFloat(),
+exports.signup = [
+    body('user_name', 'user_name is required field').notEmpty().isAlphanumeric(),
+    body('password', 'password is required field, can be alphanumeric of length 8 to 15').notEmpty().isAlphanumeric().isLength({ min: 8, max:15 }),
+    body('user_role', 'user_role is required field').notEmpty().isIn(['admin', 'seller', 'supporter', 'customer']),
+    body('first_name', 'Invalid first_name').optional().isString(),
+    body('last_name', 'Invalid last_name').optional().isString(),
 ]
 
-exports.foodUpdate = [
-    check('food_name', 'food_name is required').not().isEmpty().isString(),
-    check('unit_of_measurement', 'unit_of_measurement is required').not().isEmpty().isIn(['gram', 'litre']),
-    check('unit', 'unit is required').not().isEmpty().isFloat(),
-    check('calories', 'calories is required').not().isEmpty().isFloat(),
+exports.productCreate = [
 ]
-
-exports.foodList = [
-    check('food_id', 'Invalid food_id').optional().isInt(),
-    check('food_name', 'Invalid food_name').optional().isString(),
+exports.productUpdate = [
 ]
-
-exports.userFoodIntakeCreate = [
-    check('food_id', 'food_id is required').not().isEmpty().isInt(),
-    check('unit', 'unit is required').not().isEmpty().isFloat(),
-    check('intake_at', 'intake_at is required').not().isEmpty().isString(),
+exports.productUpdateStatus = [
 ]
-
-exports.userIntakeThreshold = [
-    check('threshold', 'threshold is required').not().isEmpty().isFloat(),
+exports.productList = [
 ]
-
-exports.userFoodsList = [
-    check('user_id', 'Invalid user_id').optional().isInt(),
-    check('food_name', 'Invalid food_name is required').optional().isString(),
-    check('from', 'Invalid from').optional().isString(),
-    check('to', 'Invalid to').optional().isString(),
+exports.productDelete = [
 ]

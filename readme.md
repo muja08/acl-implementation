@@ -1,10 +1,18 @@
-Pre-requesites
-keep node installed
-keep mysql installed
-
-execute below:
+nvm use 8
 npm i
-executing scratchDB.sql in Mysql will create entries in SQL
-nodemon index.js
 
-please refer calorie-tracking-DOC.md for further proceedings
+refer below postman link for API endpoints
+https://www.getpostman.com/collections/c28a6aab7d2f49ddf2e9
+
+
+POST /login
+POST /signup
+
+
+['*'] will apply roles & rights for all the roles
+
+POST /product ['admin', 'seller']
+PUT /product ['admin', 'seller']
+PATCH /product/:id ['admin', 'seller']
+DELETE /product/:id ['admin', 'supporter']
+GET /product ['admin', 'seller', 'supporter', 'customer']

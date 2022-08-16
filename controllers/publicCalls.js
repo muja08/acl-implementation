@@ -1,5 +1,5 @@
 var jwt = require('jsonwebtoken');
-const db = require('../database.js').calories_db
+const db = require('../database.js').one_db
 const { validationResult } = require('express-validator');
 const logger = require('./../logger').logger
 
@@ -18,7 +18,10 @@ exports.login = async function (req, res) {
 
         if (userData && userData.length) {
 
-            if (userData[0].password === payload.password) {
+            console.log('userData', userData)
+            console.log('payload', payload)
+
+            if (userData[0].Password === payload.password) {
 
 
                 let tokenPay = {
@@ -26,7 +29,6 @@ exports.login = async function (req, res) {
                     first_name: userData[0].first_name,
                     last_name: userData[0].last_name,
                     user_name: userData[0].user_name,
-                    email: userData[0].email,
                     role: userData[0].role,
                     dateTime: new Date()
                 };
@@ -34,33 +36,66 @@ exports.login = async function (req, res) {
 
                 let token = jwt.sign(tokenPay, process.env.jwtSecretKey, { expiresIn: process.env.jwtTokenExpiry });
 
-                res.json({
-                    status: 200,
+                res.status(200).json({
                     success: true,
                     token
                 })
 
             } else {
-                res.json({
+                res.status(401).json({
                     success: true,
-                    status: 200,
-                    message: 'Invalid password!',
+                    message: 'Authentication failed!',
                 });
             }
 
         } else {
-            res.json({
+            res.status(200).json({
                 success: true,
-                status: 200,
                 message: 'Invalid user_name!',
             });
         }
     } catch (error) {
         logger.error("Error in login call", error)
-        res.json({
-            status: 500,
+        res.status(500).json({
             error,
             message: "Not able to login!!"
         })
+    } finally {
+        db.releaseConnection(dbConn)
+    }
+};
+
+
+exports.signup = async function (req, res) {
+    const dbConn = await db.getConnection()
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.json(errors)
+            return
+        }
+
+        let payload = req.body
+
+        let userData = await dbConn.query("insert into users (user_name, first_name, last_name, Password) values (?,?,?,?)", [payload.user_name, payload.first_name, payload.last_name, payload.password])
+
+        console.log('userData', userData)
+
+
+        let userRole = await dbConn.query("insert into user_role (user_id, role) values (?,?)", [userData.insertId, payload.user_role])
+
+        res.status(200).json({
+            userId: userData.insertId,
+            message: "User creation successfull"
+        })
+
+    } catch (error) {
+        logger.error("Error in Signup call", error)
+        res.status(500).json({
+            error,
+            message: "Not able to Signup!!"
+        })
+    } finally {
+        db.releaseConnection(dbConn)
     }
 };

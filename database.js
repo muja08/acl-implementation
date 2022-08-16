@@ -1,5 +1,5 @@
 const mysql = require("promise-mysql")
-exports.calories_db = mysql.createPool({
+exports.one_db = mysql.createPool({
 	connectionLimit: 100,
 	connectTimeout : 60 * 60 * 1000,
     aquireTimeout : 60 * 60 * 1000,
