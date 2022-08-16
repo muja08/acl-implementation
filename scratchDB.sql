@@ -1,5 +1,7 @@
 create database one;
 
+use one;
+
 create table users (
     id int not null AUTO_INCREMENT,
     user_name varchar(255) not null,

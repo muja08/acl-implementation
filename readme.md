@@ -1,6 +1,8 @@
 nvm use 8
 npm i
 
+nodemon index.js
+
 refer below postman link for API endpoints
 https://www.getpostman.com/collections/c28a6aab7d2f49ddf2e9
 
